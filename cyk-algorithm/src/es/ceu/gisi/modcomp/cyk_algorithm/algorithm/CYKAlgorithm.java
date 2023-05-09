@@ -12,6 +12,10 @@ import es.ceu.gisi.modcomp.cyk_algorithm.algorithm.interfaces.CYKAlgorithmInterf
  */
 public class CYKAlgorithm implements CYKAlgorithmInterface {
 
+    public List<char> terminales = new ArrayList<String>();
+    public List<char> noTerminales = new ArrayList<String>();
+    public Map<char, String> listaUnion = new HashMap<>();
+
     @Override
     /**
      * Método que añade los elementos no terminales de la gramática.
@@ -20,7 +24,9 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
      * @throws CYKAlgorithmException Si el elemento no es una letra mayúscula.
      */
     public void addNonTerminal(char nonterminal) throws CYKAlgorithmException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        noTerminales.add(nonterminal);
+        if(!Character.isUpperCase(nonterminal))
+            throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -31,7 +37,9 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
      * @throws CYKAlgorithmException Si el elemento no es una letra minúscula.
      */
     public void addTerminal(char terminal) throws CYKAlgorithmException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        terminales.add(terminal);
+        if(Character.isUpperCase(terminal))
+            throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
