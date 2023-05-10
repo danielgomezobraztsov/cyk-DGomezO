@@ -1,5 +1,5 @@
 package es.ceu.gisi.modcomp.cyk_algorithm.algorithm;
-
+import java.util.*;
 import es.ceu.gisi.modcomp.cyk_algorithm.algorithm.exceptions.CYKAlgorithmException;
 import es.ceu.gisi.modcomp.cyk_algorithm.algorithm.interfaces.CYKAlgorithmInterface;
 
@@ -12,9 +12,9 @@ import es.ceu.gisi.modcomp.cyk_algorithm.algorithm.interfaces.CYKAlgorithmInterf
  */
 public class CYKAlgorithm implements CYKAlgorithmInterface {
 
-    public List<char> terminales = new ArrayList<String>();
-    public List<char> noTerminales = new ArrayList<String>();
-    public Map<char, String> listaUnion = new HashMap<>();
+    public HashSet<Character> terminales = new HashSet<>();
+    public HashSet<Character> noTerminales = new HashSet<>();
+    public Map<Character, String> lista = new HashMap<>();
 
     @Override
     /**
