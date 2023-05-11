@@ -14,7 +14,8 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
 
     public HashSet<Character> terminales = new HashSet<>();
     public HashSet<Character> noTerminales = new HashSet<>();
-    public Map<Character, String> lista = new HashMap<>();
+    public Map<Character, HashSet<String>> producciones = new HashMap<Charater, HashSet<String<>>();
+    public Character axioma = 'S';
 
     @Override
     /**
@@ -52,7 +53,9 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
      * conjunto de elementos no terminales.
      */
     public void setStartSymbol(char nonterminal) throws CYKAlgorithmException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if(!noTerminales.contains(nonterminal))
+            throw new UnsupportedOperationException("Not supported yet.");
+        axioma = nonterminal;
     }
 
     @Override
@@ -67,7 +70,32 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
      * previamente.
      */
     public void addProduction(char nonterminal, String production) throws CYKAlgorithmException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if(production.length()==2){
+            //String dividido[]= production.split("", 2);
+            char noTer1 = production.charAt(0);
+            char noTer2 = production.charAt(1);
+            if (noTerminales.contains(noTer1) && noTerminales.contains(noTer2)){
+                if(noTerminales.contains(nonterminal)){
+                    HashSet<String> hs1 = new HashSet<String>();
+                    hs.add(production);
+                    //hs.add(noTer2);
+                    producciones.put(nonterminal, hs);
+                }
+            }
+            //producciones.put(nonterminal, new HashSet<>()); creo que no va aqui
+        }else if(production.length()==1){
+            char ter = production.charAt(0);
+            if(terminales.contains(ter)){
+                HashSet<String> hs2 = new HashSet<String>();
+                hs.add(production);
+                producciones.put(nonterminal, hs2);
+            }
+        }else
+            throw new UnsupportedOperationException("Not supported yet.");
+        
+        
+        
+       //throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -84,6 +112,7 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
      * gramática es vacía o si el autómata carece de axioma.
      */
     public boolean isDerived(String word) throws CYKAlgorithmException {
+        
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
