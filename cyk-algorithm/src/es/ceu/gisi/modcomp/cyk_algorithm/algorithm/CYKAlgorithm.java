@@ -15,7 +15,7 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
     public HashSet<Character> terminales = new HashSet<>();
     public HashSet<Character> noTerminales = new HashSet<>();
     public Map<Character, HashSet<String>> producciones = new HashMap<Charater, HashSet<String<>>();
-    public Character axioma = 'S';
+    public Character axioma = '';
 
     @Override
     /**
@@ -143,7 +143,10 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
      * dejando el algoritmo listo para volver a insertar una gramática nueva.
      */
     public void removeGrammar() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        producciones.clear();
+        noTerminales.clear();
+        terminales.clear();
+        axioma = '';
     }
 
     @Override
