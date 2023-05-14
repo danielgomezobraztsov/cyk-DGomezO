@@ -1,5 +1,6 @@
 package es.ceu.gisi.modcomp.cyk_algorithm.algorithm;
 import java.util.*;
+import java.lang.*;
 import es.ceu.gisi.modcomp.cyk_algorithm.algorithm.exceptions.CYKAlgorithmException;
 import es.ceu.gisi.modcomp.cyk_algorithm.algorithm.interfaces.CYKAlgorithmInterface;
 
@@ -14,8 +15,10 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
 
     public HashSet<Character> terminales = new HashSet<>();
     public HashSet<Character> noTerminales = new HashSet<>();
-    public Map<Character, HashSet<String>> producciones = new HashMap<Charater, HashSet<String<>>();
-    public Character axioma = '';
+    public HashMap<Character, HashSet<String>> producciones = new HashMap<>();
+    //public HashMap<Character, String> producciones = new HashMap<>();
+    public Character axioma = ' ';
+    public HashSet<String> pr1 = new HashSet<>();
 
     @Override
     /**
@@ -25,9 +28,12 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
      * @throws CYKAlgorithmException Si el elemento no es una letra mayúscula.
      */
     public void addNonTerminal(char nonterminal) throws CYKAlgorithmException {
-        noTerminales.add(nonterminal);
         if(!Character.isUpperCase(nonterminal))
             throw new UnsupportedOperationException("Not supported yet.");
+        else{
+            noTerminales.add(nonterminal);
+            producciones.put(nonterminal,new HashSet<>());
+        }
     }
 
     @Override
@@ -38,9 +44,10 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
      * @throws CYKAlgorithmException Si el elemento no es una letra minúscula.
      */
     public void addTerminal(char terminal) throws CYKAlgorithmException {
-        terminales.add(terminal);
         if(Character.isUpperCase(terminal))
             throw new UnsupportedOperationException("Not supported yet.");
+        else
+            terminales.add(terminal);
     }
 
     @Override
@@ -59,6 +66,9 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
     }
 
     @Override
+    
+    
+    
     /**
      * Método utilizado para construir la gramática. Admite producciones en FNC,
      * es decir de tipo A::=BC o A::=a
@@ -70,29 +80,32 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
      * previamente.
      */
     public void addProduction(char nonterminal, String production) throws CYKAlgorithmException {
-        if(production.length()==2){
+        //HashSet<String> pr1 = new HashSet<>();
+        //HashSet<String> pr2 = new HashSet<>();
+        HashSet<String> s = producciones.get(nonterminal);
+        if(production.length()== 2){
             //String dividido[]= production.split("", 2);
             char noTer1 = production.charAt(0);
             char noTer2 = production.charAt(1);
             if (noTerminales.contains(noTer1) && noTerminales.contains(noTer2)){
                 if(noTerminales.contains(nonterminal)){
-                    HashSet<String> hs1 = new HashSet<String>();
-                    hs.add(production);
-                    //hs.add(noTer2);
-                    producciones.put(nonterminal, hs);
+                    //pr1.add(production);
+                    //pr1.add(noTer2);
+                    s.add(production);
                 }
             }
             //producciones.put(nonterminal, new HashSet<>()); creo que no va aqui
         }else if(production.length()==1){
             char ter = production.charAt(0);
+            
             if(terminales.contains(ter)){
-                HashSet<String> hs2 = new HashSet<String>();
-                hs.add(production);
-                producciones.put(nonterminal, hs2);
+                
+                //pr1.add(production);
+                s.add(production);
             }
         }else
             throw new UnsupportedOperationException("Not supported yet.");
-        
+        pr1.clear();
         
         
        //throw new UnsupportedOperationException("Not supported yet.");
@@ -112,8 +125,18 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
      * gramática es vacía o si el autómata carece de axioma.
      */
     public boolean isDerived(String word) throws CYKAlgorithmException {
+        /*int n = word.length();
+        String[][] matriz = new String[n][n];
         
-        throw new UnsupportedOperationException("Not supported yet.");
+        for(int i=0;i<n;i++){
+            for(int j=0;j<=n;j++){
+                matriz[n][j]="";
+                matriz[j][n-i]="";
+            }
+        }
+        
+        
+        return false;
     }
 
     @Override
@@ -146,7 +169,7 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
         producciones.clear();
         noTerminales.clear();
         terminales.clear();
-        axioma = '';
+        axioma = ' ';
     }
 
     @Override
@@ -162,7 +185,16 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
      * salida podría ser: "S::=AB|BC".
      */
     public String getProductions(char nonterminal) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        StringBuilder sb = new StringBuilder();
+        for (Character c: producciones.keySet()){
+            sb.append(c.toString()).append("::=");
+            HashSet<String> hs = producciones.get(c);
+            for(String ch:hs){
+                sb.append(ch.toString()).append("|");
+            }
+            sb.append("\n");
+        }
+        return sb.toString();
     }
 
     @Override
