@@ -125,18 +125,44 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
      * gramática es vacía o si el autómata carece de axioma.
      */
     public boolean isDerived(String word) throws CYKAlgorithmException {
-        /*int n = word.length();
-        String[][] matriz = new String[n][n];
+        int n = word.length();
+        Set<String>[][] matriz = new Set[n][n];
+        String[] entrada = word.split("", 0);
         
-        for(int i=0;i<n;i++){
-            for(int j=0;j<=n;j++){
-                matriz[n][j]="";
-                matriz[j][n-i]="";
+        
+        for (int i=0;i<=n;i++){
+            Set<String> simbolos = new HashSet<>();
+            for (Map.Entry<Character, HashSet<String>> entry : producciones.entrySet()) {
+                String noT = entry.getKey().toString();
+                Set<String> t = entry.getValue();
+                if (t.contains(entrada[i]))
+                    simbolos.add(noT);
+            }
+            matriz[i][0] = simbolos;
+        }
+        for (int j = 1; j < n; j++) {
+            for (int i = 0; i < n - j; i++) {
+                Set<String> simbolos = new HashSet<>();
+                for (int k = 0; k < j; k++) {
+                    Set<String> arriba = matriz[i][k];
+                    Set<String> diagonal = matriz[i + k + 1][j - k - 1];
+                    for (String arr : arriba) {
+                        for (String dia : diagonal) {
+                            String combinacion = arr + dia;
+                            if (producciones.containsKey(combinacion)) {
+                                simbolos.addAll(producciones.get(combinacion));
+                            }
+                        }
+                    }
+                }
+                matriz[i][j] = simbolos;
             }
         }
-        
-        
-        return false;
+        Set<String> s = matriz[0][n-1];
+        if(s.contains(axioma))
+            return true;
+        else
+            return false;
     }
 
     @Override
