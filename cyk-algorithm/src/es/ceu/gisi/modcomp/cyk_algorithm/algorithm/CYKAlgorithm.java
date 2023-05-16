@@ -29,7 +29,7 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
      */
     public void addNonTerminal(char nonterminal) throws CYKAlgorithmException {
         if(!Character.isUpperCase(nonterminal))
-            throw new UnsupportedOperationException("Not supported yet.");
+            throw new CYKAlgorithmException();
         else{
             noTerminales.add(nonterminal);
             producciones.put(nonterminal,new HashSet<>());
@@ -45,7 +45,7 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
      */
     public void addTerminal(char terminal) throws CYKAlgorithmException {
         if(Character.isUpperCase(terminal))
-            throw new UnsupportedOperationException("Not supported yet.");
+            throw new CYKAlgorithmException();
         else
             terminales.add(terminal);
     }
@@ -61,7 +61,7 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
      */
     public void setStartSymbol(char nonterminal) throws CYKAlgorithmException {
         if(!noTerminales.contains(nonterminal))
-            throw new UnsupportedOperationException("Not supported yet.");
+            throw new CYKAlgorithmException();
         axioma = nonterminal;
     }
 
@@ -89,23 +89,37 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
             char noTer2 = production.charAt(1);
             if (noTerminales.contains(noTer1) && noTerminales.contains(noTer2)){
                 if(noTerminales.contains(nonterminal)){
-                    //pr1.add(production);
-                    //pr1.add(noTer2);
+                    if((nonterminal != 'S')&& (noTer1=='S')||(noTer2=='S')){
+                        throw new CYKAlgorithmException();
+                    }
+                    else{    
                     s.add(production);
+                    producciones.put(nonterminal, s);
+                    }
                 }
+                else
+                    throw new CYKAlgorithmException();
             }
+            else
+                throw new CYKAlgorithmException();
             //producciones.put(nonterminal, new HashSet<>()); creo que no va aqui
         }else if(production.length()==1){
             char ter = production.charAt(0);
             
             if(terminales.contains(ter)){
-                
-                //pr1.add(production);
-                s.add(production);
+                if(noTerminales.contains(nonterminal)){
+                    //pr1.add(production);
+                    s.add(production);
+                    producciones.put(nonterminal, s);
+                }
+                else
+                    throw new CYKAlgorithmException();
             }
+            else
+                throw new CYKAlgorithmException();
         }else
-            throw new UnsupportedOperationException("Not supported yet.");
-        pr1.clear();
+            throw new CYKAlgorithmException();
+        //pr1.clear();
         
         
        //throw new UnsupportedOperationException("Not supported yet.");
@@ -127,42 +141,84 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
     public boolean isDerived(String word) throws CYKAlgorithmException {
         int n = word.length();
         Set<String>[][] matriz = new Set[n][n];
-        String[] entrada = word.split("", 0);
+        String[] entrada = word.split("");
         
-        
-        for (int i=0;i<=n;i++){
-            Set<String> simbolos = new HashSet<>();
-            for (Map.Entry<Character, HashSet<String>> entry : producciones.entrySet()) {
-                String noT = entry.getKey().toString();
-                Set<String> t = entry.getValue();
-                if (t.contains(entrada[i]))
-                    simbolos.add(noT);
-            }
-            matriz[i][0] = simbolos;
-        }
-        for (int j = 1; j < n; j++) {
-            for (int i = 0; i < n - j; i++) {
-                Set<String> simbolos = new HashSet<>();
-                for (int k = 0; k < j; k++) {
-                    Set<String> arriba = matriz[i][k];
-                    Set<String> diagonal = matriz[i + k + 1][j - k - 1];
-                    for (String arr : arriba) {
-                        for (String dia : diagonal) {
-                            String combinacion = arr + dia;
-                            if (producciones.containsKey(combinacion)) {
-                                simbolos.addAll(producciones.get(combinacion));
+        for(int p=0;p<n;p++){
+            if(terminales.contains(word.charAt(p))){
+                if(word==word.toLowerCase()){
+                    for (int i=0;i<n;i++){
+                        Set<String> simbolos = new HashSet<>();
+                        for (Map.Entry<Character, HashSet<String>> entry : producciones.entrySet()) {
+                            String noT = entry.getKey().toString();
+                            Set<String> t = entry.getValue();
+                            if (t.contains(entrada[i]))
+                                simbolos.add(noT);
+                        }
+                        matriz[i][0] = simbolos;
+                    }
+                    for (int j = 1; j < n; j++) {
+                        for (int i = 0; i < n - j; i++) {
+                            Set<String> simbolos = new HashSet<>();
+                            for (int k = 0; k < j; k++) {
+                                Set<String> arriba = matriz[i][k];
+                                Set<String> diagonal = matriz[i + k + 1][j - k - 1];
+                                for (String arr : arriba) {
+                                    for (String dia : diagonal) {
+                                        String combinacion = arr + dia;
+                                        if (producciones.containsKey(combinacion)) {
+                                            simbolos.addAll(producciones.get(combinacion));
+                                        }
+                                    }
+                                }
                             }
+                            matriz[i][j] = simbolos;
                         }
                     }
                 }
-                matriz[i][j] = simbolos;
+                else
+                    throw new CYKAlgorithmException();    
             }
+            else
+                throw new CYKAlgorithmException();
         }
         Set<String> s = matriz[0][n-1];
         if(s.contains(axioma))
             return true;
         else
             return false;
+//        for (int i=0;i<n;i++){
+//            Set<String> simbolos = new HashSet<>();
+//            for (Map.Entry<Character, HashSet<String>> entry : producciones.entrySet()) {
+//                String noT = entry.getKey().toString();
+//                Set<String> t = entry.getValue();
+//                if (t.contains(entrada[i]))
+//                    simbolos.add(noT);
+//            }
+//            matriz[i][0] = simbolos;
+//        }
+//        for (int j = 1; j < n; j++) {
+//            for (int i = 0; i < n - j; i++) {
+//                Set<String> simbolos = new HashSet<>();
+//                for (int k = 0; k < j; k++) {
+//                    Set<String> arriba = matriz[i][k];
+//                    Set<String> diagonal = matriz[i + k + 1][j - k - 1];
+//                    for (String arr : arriba) {
+//                        for (String dia : diagonal) {
+//                            String combinacion = arr + dia;
+//                            if (producciones.containsKey(combinacion)) {
+//                                simbolos.addAll(producciones.get(combinacion));
+//                            }
+//                        }
+//                    }
+//                }
+//                matriz[i][j] = simbolos;
+//            }
+//        }
+//        Set<String> s = matriz[0][n-1];
+//        if(s.contains(axioma))
+//            return true;
+//        else
+//            return false;
     }
 
     @Override
@@ -211,14 +267,33 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
      * salida podría ser: "S::=AB|BC".
      */
     public String getProductions(char nonterminal) {
+//        StringBuilder sb = new StringBuilder();
+//        for (Character c: producciones.keySet()){
+//            sb.append(c.toString()).append("::=");
+//            HashSet<String> hs = producciones.get(c);
+//            for(String ch:hs){
+//                sb.append(ch.toString()).append("|");
+//            }
+//            sb.append("\n");
+//        }
+//        return sb.toString();
+        
         StringBuilder sb = new StringBuilder();
-        for (Character c: producciones.keySet()){
-            sb.append(c.toString()).append("::=");
-            HashSet<String> hs = producciones.get(c);
+        /*for (Character c: producciones.keySet()){
+            HashSet<String> hs = producciones.get(nonterminal);
+            sb.append(nonterminal).append("::=");
             for(String ch:hs){
-                sb.append(ch.toString()).append("|");
+                sb.append(ch).append("|");
             }
-            sb.append("\n");
+        }
+        return sb.toString();*/
+        
+        HashSet<String> pr = producciones.get(nonterminal);
+        sb.append(nonterminal).append("::=");
+        for(String ch : pr){
+            sb.append(ch);
+            if(sb.indexOf("|") == -1)
+                sb.append("|");
         }
         return sb.toString();
     }
