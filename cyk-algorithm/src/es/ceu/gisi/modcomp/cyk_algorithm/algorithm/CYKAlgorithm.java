@@ -31,8 +31,12 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
         if(!Character.isUpperCase(nonterminal))
             throw new CYKAlgorithmException();
         else{
-            noTerminales.add(nonterminal);
-            producciones.put(nonterminal,new HashSet<>());
+            if(noTerminales.contains(nonterminal))
+                throw new CYKAlgorithmException();
+            else{
+                noTerminales.add(nonterminal);
+                producciones.put(nonterminal,new HashSet<>());
+            }
         }
     }
 
@@ -44,10 +48,15 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
      * @throws CYKAlgorithmException Si el elemento no es una letra minúscula.
      */
     public void addTerminal(char terminal) throws CYKAlgorithmException {
-        if(Character.isUpperCase(terminal))
-            throw new CYKAlgorithmException();
+        if(Character.isLowerCase(terminal)){
+            if(terminales.contains(terminal)){
+                throw new CYKAlgorithmException();
+            }
+            else
+                terminales.add(terminal);
+        }
         else
-            terminales.add(terminal);
+            throw new CYKAlgorithmException();
     }
 
     @Override
@@ -186,6 +195,7 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
             return true;
         else
             return false;
+        
 //        for (int i=0;i<n;i++){
 //            Set<String> simbolos = new HashSet<>();
 //            for (Map.Entry<Character, HashSet<String>> entry : producciones.entrySet()) {
@@ -294,6 +304,9 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
             sb.append(ch);
             if(sb.indexOf("|") == -1)
                 sb.append("|");
+        }
+        if(pr.isEmpty()){
+            pr.add("");
         }
         return sb.toString();
     }
