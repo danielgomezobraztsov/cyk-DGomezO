@@ -98,8 +98,12 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
             char noTer2 = production.charAt(1);
             if (noTerminales.contains(noTer1) && noTerminales.contains(noTer2)){
                 if(noTerminales.contains(nonterminal)){
-                    if((nonterminal != 'S')&& (noTer1=='S')||(noTer2=='S')){
-                        throw new CYKAlgorithmException();
+                    if((noTer1=='S')||(noTer2=='S')){
+                        if(nonterminal == 'S'){
+                            s.add(production);
+                            producciones.put(nonterminal, s);
+                        }else
+                            throw new CYKAlgorithmException();
                     }
                     else{    
                     s.add(production);
@@ -148,87 +152,52 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
      * gramática es vacía o si el autómata carece de axioma.
      */
     public boolean isDerived(String word) throws CYKAlgorithmException {
-        int n = word.length();
-        Set<String>[][] matriz = new Set[n][n];
-        String[] entrada = word.split("");
-        
-        for(int p=0;p<n;p++){
-            if(terminales.contains(word.charAt(p))){
-                if(word==word.toLowerCase()){
-                    for (int i=0;i<n;i++){
-                        Set<String> simbolos = new HashSet<>();
-                        for (Map.Entry<Character, HashSet<String>> entry : producciones.entrySet()) {
-                            String noT = entry.getKey().toString();
-                            Set<String> t = entry.getValue();
-                            if (t.contains(entrada[i]))
-                                simbolos.add(noT);
-                        }
-                        matriz[i][0] = simbolos;
-                    }
-                    for (int j = 1; j < n; j++) {
-                        for (int i = 0; i < n - j; i++) {
-                            Set<String> simbolos = new HashSet<>();
-                            for (int k = 0; k < j; k++) {
-                                Set<String> arriba = matriz[i][k];
-                                Set<String> diagonal = matriz[i + k + 1][j - k - 1];
-                                for (String arr : arriba) {
-                                    for (String dia : diagonal) {
-                                        String combinacion = arr + dia;
-                                        if (producciones.containsKey(combinacion)) {
-                                            simbolos.addAll(producciones.get(combinacion));
-                                        }
+        if (word.length() == 0)
+            throw new CYKAlgorithmException();
+        if (axioma == ' ')
+            throw new CYKAlgorithmException();
+        for (int i = 0; i < word.length(); i++) {
+            if (!noTerminales.contains(word.charAt(i)))
+                throw new CYKAlgorithmException();
+        }
+        if (word.length() == 1) {
+            for (String s : producciones.get(axioma)) {
+                if (s.equals(word))
+                    return true;
+            }
+            return false;
+        }
+        //throw new UnsupportedOperationException("Not supported yet.");
+        else {
+            int n = word.length();
+            HashSet<String>[][] tabla = new HashSet[n][n];
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n - i; j++) {
+                    tabla[j][j + i] = new HashSet<>();
+                    if (i == 0) {
+                        for (String s : producciones.get(word.charAt(j)))
+                            tabla[j][j + i].add(s);
+                    } else {
+                        for (int k = 0; k < i; k++) {
+                            for (String s1 : tabla[j][j + k]) {
+                                for (String s2 : tabla[j + k + 1][j + i]) {
+                                    for (String s : producciones.get(axioma)) {
+                                        if (s.equals(s1 + s2))
+                                            tabla[j][j + i].add(s);
                                     }
                                 }
                             }
-                            matriz[i][j] = simbolos;
                         }
                     }
                 }
-                else
-                    throw new CYKAlgorithmException();    
             }
-            else
-                throw new CYKAlgorithmException();
-        }
-        Set<String> s = matriz[0][n-1];
-        if(s.contains(axioma))
-            return true;
-        else
+            for (String s : tabla[0][n - 1]) {
+                if (s.equals(word))
+                    return true;
+            }
             return false;
+        }
         
-//        for (int i=0;i<n;i++){
-//            Set<String> simbolos = new HashSet<>();
-//            for (Map.Entry<Character, HashSet<String>> entry : producciones.entrySet()) {
-//                String noT = entry.getKey().toString();
-//                Set<String> t = entry.getValue();
-//                if (t.contains(entrada[i]))
-//                    simbolos.add(noT);
-//            }
-//            matriz[i][0] = simbolos;
-//        }
-//        for (int j = 1; j < n; j++) {
-//            for (int i = 0; i < n - j; i++) {
-//                Set<String> simbolos = new HashSet<>();
-//                for (int k = 0; k < j; k++) {
-//                    Set<String> arriba = matriz[i][k];
-//                    Set<String> diagonal = matriz[i + k + 1][j - k - 1];
-//                    for (String arr : arriba) {
-//                        for (String dia : diagonal) {
-//                            String combinacion = arr + dia;
-//                            if (producciones.containsKey(combinacion)) {
-//                                simbolos.addAll(producciones.get(combinacion));
-//                            }
-//                        }
-//                    }
-//                }
-//                matriz[i][j] = simbolos;
-//            }
-//        }
-//        Set<String> s = matriz[0][n-1];
-//        if(s.contains(axioma))
-//            return true;
-//        else
-//            return false;
     }
 
     @Override
@@ -248,6 +217,7 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
      * gramática es vacía o si el autómata carece de axioma.
      */
     public String algorithmStateToString(String word) throws CYKAlgorithmException {
+        
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -299,14 +269,17 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
         return sb.toString();*/
         
         HashSet<String> pr = producciones.get(nonterminal);
-        sb.append(nonterminal).append("::=");
-        for(String ch : pr){
-            sb.append(ch);
-            if(sb.indexOf("|") == -1)
-                sb.append("|");
+        
+        if(producciones.keySet().isEmpty()){
+            sb.append("");
         }
-        if(pr.isEmpty()){
-            pr.add("");
+        else{
+            sb.append(nonterminal).append("::=");
+            for(String ch : pr){
+                sb.append(ch);
+                if(sb.indexOf("|") == -1)
+                    sb.append("|");
+            }
         }
         return sb.toString();
     }
@@ -319,7 +292,16 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
      * elementos no terminales.
      */
     public String getGrammar() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        StringBuilder sb = new StringBuilder();
+        for (Character c: producciones.keySet()){
+            sb.append(c.toString()).append("::=");
+            HashSet<String> hs = producciones.get(c);
+            for(String ch:hs){
+                sb.append(ch.toString()).append("|");
+            }
+            sb.append("\n");
+        }
+        return sb.toString();
     }
 
 }
