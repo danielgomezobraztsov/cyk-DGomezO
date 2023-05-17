@@ -16,7 +16,6 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
     public HashSet<Character> terminales = new HashSet<>();
     public HashSet<Character> noTerminales = new HashSet<>();
     public HashMap<Character, HashSet<String>> producciones = new HashMap<>();
-    //public HashMap<Character, String> producciones = new HashMap<>();
     public Character axioma = ' ';
     public HashSet<String> pr1 = new HashSet<>();
 
@@ -93,7 +92,6 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
         //HashSet<String> pr2 = new HashSet<>();
         HashSet<String> s = producciones.get(nonterminal);
         if(production.length()== 2){
-            //String dividido[]= production.split("", 2);
             char noTer1 = production.charAt(0);
             char noTer2 = production.charAt(1);
             if (noTerminales.contains(noTer1) && noTerminales.contains(noTer2)){
@@ -129,10 +127,6 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
                 throw new CYKAlgorithmException();
         }else
             throw new CYKAlgorithmException();
-        //pr1.clear();
-        
-        
-       //throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -168,10 +162,8 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
                     matriz[0][i] += entry.getKey()+"";
                 }
             }
-            //System.out.print(matriz[0][i]);
         }
 
-        //System.out.println("\n");
 
         for (int i = 2;i<=n;i++) {
             for (int j = 1; j <= n - i + 1; j++) {
@@ -185,7 +177,6 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
                                 String celda = String.valueOf(celda1.charAt(l)) + String.valueOf(celda2.charAt(m));
                                 for (Map.Entry<Character, HashSet<String>> entry : producciones.entrySet()) {
                                     if (entry.getValue().contains(celda)) {
-                                        //si la celda ya contiene el no terminal no se añade, si no se añade
                                         if (!matriz[i - 1][j - 1].contains(String.valueOf(entry.getKey()))) {
                                             matriz[i - 1][j - 1] += entry.getKey()+"";
                                         }
@@ -195,9 +186,7 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
                         }
                     }
                 }
-                //System.out.print(matriz[i - 1][j - 1]);
             }
-            //System.out.println("\n");
         }
 
         if (matriz[n - 1][0].contains(String.valueOf(axioma)))
@@ -243,11 +232,8 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
                     matriz[0][i] += entry.getKey()+"";
                 }
             }
-            //System.out.print(matriz[0][i]);
-            //sb.append("["+matriz[0][i]+"]");
         }
 
-        //System.out.println("\n");
 
         for (int i = 2;i<=n;i++) {
             for (int j = 1; j <= n - i + 1; j++) {
@@ -268,10 +254,7 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
                             }
                         }
                     }
-                    //sb.append("["+matriz[i - 1][j - 1]+"]");
                 }
-                //System.out.print(matriz[i - 1][j - 1]);
-                //sb.append("\n");
             }
         }
         for(int i=0;i<n;i++){
@@ -313,16 +296,6 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
      * salida podría ser: "S::=AB|BC".
      */
     public String getProductions(char nonterminal) {
-//        StringBuilder sb = new StringBuilder();
-//        for (Character c: producciones.keySet()){
-//            sb.append(c.toString()).append("::=");
-//            HashSet<String> hs = producciones.get(c);
-//            for(String ch:hs){
-//                sb.append(ch.toString()).append("|");
-//            }
-//            sb.append("\n");
-//        }
-//        return sb.toString();
         
         StringBuilder sb = new StringBuilder();
         
