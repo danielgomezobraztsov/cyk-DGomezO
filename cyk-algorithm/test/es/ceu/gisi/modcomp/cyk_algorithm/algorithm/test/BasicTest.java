@@ -598,4 +598,61 @@ public class BasicTest {
         System.out.print(cyk.algorithmStateToString("ababb"));
         assertFalse(cyk.isDerived("ababb"));
     }
+
+    @Test
+    public void comprobarDerivacionValido9() throws CYKAlgorithmException {
+
+        cyk = new CYKAlgorithm();
+
+        cyk.addNonTerminal('S');
+        cyk.addNonTerminal('A');
+        cyk.addNonTerminal('B');
+
+        cyk.addTerminal('a');
+        cyk.addTerminal('b');
+
+        cyk.setStartSymbol('S');
+
+        cyk.addProduction('S', "AB");
+        cyk.addProduction('S', "BA");
+        cyk.addProduction('S', "a");
+
+        cyk.addProduction('A', "AA");
+        cyk.addProduction('A', "BB");
+
+        cyk.addProduction('B', "BB");
+        cyk.addProduction('B', "SB");
+        cyk.addProduction('B', "b");
+
+        System.out.print(cyk.algorithmStateToString("bbbbbab"));
+        assertTrue(cyk.isDerived("bbbbbab"));
+    }
+    @Test
+    public void comprobarDerivacionValido10() throws CYKAlgorithmException {
+
+        cyk = new CYKAlgorithm();
+
+        cyk.addNonTerminal('S');
+        cyk.addNonTerminal('A');
+        cyk.addNonTerminal('B');
+
+        cyk.addTerminal('a');
+        cyk.addTerminal('b');
+
+        cyk.setStartSymbol('S');
+
+        cyk.addProduction('S', "AB");
+        cyk.addProduction('S', "BA");
+        cyk.addProduction('S', "a");
+
+        cyk.addProduction('A', "AA");
+        cyk.addProduction('A', "BB");
+
+        cyk.addProduction('B', "BB");
+        cyk.addProduction('B', "SB");
+        cyk.addProduction('B', "b");
+
+        System.out.print(cyk.algorithmStateToString("aabaa"));
+        assertFalse(cyk.isDerived("aabaa"));
+    }
 }

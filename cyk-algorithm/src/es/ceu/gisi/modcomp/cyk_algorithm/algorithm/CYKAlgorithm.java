@@ -185,7 +185,10 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
                                 String celda = String.valueOf(celda1.charAt(l)) + String.valueOf(celda2.charAt(m));
                                 for (Map.Entry<Character, HashSet<String>> entry : producciones.entrySet()) {
                                     if (entry.getValue().contains(celda)) {
-                                        matriz[i - 1][j - 1] += entry.getKey();
+                                        //si la celda ya contiene el no terminal no se añade, si no se añade
+                                        if (!matriz[i - 1][j - 1].contains(String.valueOf(entry.getKey()))) {
+                                            matriz[i - 1][j - 1] += entry.getKey()+"";
+                                        }
                                     }
                                 }
                             }
@@ -258,7 +261,8 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
                                 String celda = String.valueOf(celda1.charAt(l)) + String.valueOf(celda2.charAt(m));
                                 for (Map.Entry<Character, HashSet<String>> entry : producciones.entrySet()) {
                                     if (entry.getValue().contains(celda)) {
-                                        matriz[i - 1][j - 1] += entry.getKey();
+                                        if(!matriz[i - 1][j - 1].contains(String.valueOf(entry.getKey())))
+                                            matriz[i - 1][j - 1] += entry.getKey();
                                     }
                                 }
                             }
