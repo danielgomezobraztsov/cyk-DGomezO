@@ -88,8 +88,6 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
      * previamente.
      */
     public void addProduction(char nonterminal, String production) throws CYKAlgorithmException {
-        //HashSet<String> pr1 = new HashSet<>();
-        //HashSet<String> pr2 = new HashSet<>();
         HashSet<String> s = producciones.get(nonterminal);
         if(production.length()== 2){
             char noTer1 = production.charAt(0);

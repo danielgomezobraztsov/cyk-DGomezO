@@ -251,7 +251,7 @@ public class BasicTest {
         cyk.addProduction('C', "a");
 
         assertEquals("S::=AB|BC", cyk.getProductions('S'));
-        assertEquals("A::=BA|a", cyk.getProductions('A'));
+        assertEquals("A::=a|BA", cyk.getProductions('A'));
         assertEquals("B::=CC|b", cyk.getProductions('B'));
         assertEquals("C::=AB|a", cyk.getProductions('C'));
 
@@ -387,7 +387,7 @@ public class BasicTest {
         cyk.addProduction('C', "AB");
         cyk.addProduction('C', "a");
 
-        //System.out.print(cyk.algorithmStateToString("baaba"));
+        System.out.print(cyk.algorithmStateToString("baaba"));
         assertTrue(cyk.isDerived("baaba"));
     }
 
@@ -652,7 +652,7 @@ public class BasicTest {
         cyk.addProduction('B', "SB");
         cyk.addProduction('B', "b");
 
-        System.out.print(cyk.algorithmStateToString("aabaa"));
+        System.out.print(cyk.algorithmStateToString("aaababbabababbaa"));
         assertFalse(cyk.isDerived("aabaa"));
     }
 }
